@@ -1,0 +1,64 @@
+package parser;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import model.Board;
+import model.Coordinates;
+import model.FileDetails;
+
+/**
+ * Parses the text file containing start, goal state coordinates and obstacle shape coordinates
+ * @author apoorva
+ *
+ */
+public class FileParser {
+
+
+	public void parseDataFile(FileDetails fileDetail) {
+		Board board = Board.getBoardInstance();
+		try {
+
+			File file = new File(fileDetail.getFilePath());
+			Scanner input = new Scanner(file);
+			int count=0;
+			while (input.hasNextLine()) {
+				String line = input.nextLine();
+				//System.out.println(line);
+				String[] tokens = line.split("#");
+				String last = tokens[tokens.length - 1];
+				Coordinates coord ;
+				String[] getCoordinates = last.trim().split(" ");
+				board.setFileOpen(true);
+				if(line.contains("Start")){
+					coord = new Coordinates();
+					coord.setX(Integer.parseInt(getCoordinates[0]));
+					coord.setY(Integer.parseInt(getCoordinates[1]));
+					board.setStart(coord);
+				}else if( line.contains("Goal")){
+					coord = new Coordinates();
+					coord.setX(Integer.parseInt(getCoordinates[0]));
+					coord.setY(Integer.parseInt(getCoordinates[1]));
+					board.setGoal(coord);
+				}else if( line.contains("Obstacle")){
+					List<Coordinates> obstacleCoordinates = new ArrayList<Coordinates>();
+					int i=0;
+					count++;
+					while(getCoordinates.length > i){
+						coord = new Coordinates();
+						coord.setX(Integer.parseInt(getCoordinates[i]));
+						coord.setY(Integer.parseInt(getCoordinates[i+1]));
+						obstacleCoordinates.add(coord);
+						i+=2;
+					}
+					board.setObstacleMap(count,obstacleCoordinates);
+				}
+			}
+			input.close();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+}
