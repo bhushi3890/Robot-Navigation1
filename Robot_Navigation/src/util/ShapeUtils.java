@@ -1,8 +1,21 @@
 package util;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Line2D;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import ui.DrawBoard;
+import model.Board;
+import model.Circle;
+import model.Coordinates;
 
 /**
  * Helper class for UI
@@ -11,6 +24,8 @@ import java.awt.Shape;
  */
 public class ShapeUtils {
 
+
+	static Board board = Board.getBoardInstance();
 	public static Shape radiusShape(int points, int... radii)
 	 {
 		Polygon polygon = new Polygon();
@@ -32,4 +47,99 @@ public class ShapeUtils {
 		return polygon;
 	}
 
+
+	public static Arc2D drawArc(Coordinates currentNode,Graphics2D g){
+
+		//Arc2D temp= new Arc2D.Double(currentNode.getX()+180,currentNode.getY()-55, 180, 180, 0, 120, Arc2D.PIE);
+		Arc2D temp= new Arc2D.Double();
+		temp.setArcByCenter(currentNode.getX()+3, currentNode.getY()-3,150 , 0, 120, Arc2D.PIE);
+		Color c=new Color(1.0f,1.0f,0.0f,.3f );
+		g.setColor(c);
+		g.fill(temp);
+		return temp;
+	}
+
+	/**
+	 * Draws obstacle
+	 * @param g2d
+	 */
+	//private void drawObstacle(Graphics2D g2d) {
+	public static void drawObstacle(Graphics g) {
+		// TODO Auto-generated method stub
+		Iterator<?> it = board.getObstacleMap().entrySet().iterator();
+
+		while(it.hasNext()){
+			Map.Entry<Integer, List<Coordinates>> pair = (Map.Entry)it.next();
+			List<Coordinates> coordinateList = pair.getValue();
+			int sides =coordinateList.size();
+			int[] polyX = new int[sides];
+			int[] polyY =new int[sides];
+
+			int counter=0;
+			for(Coordinates obj:coordinateList){
+				polyX[counter]=obj.getX();
+				polyY[counter]=obj.getY();
+				counter++;				
+			}
+
+			//g.drawPolygon(polyX, polyY, sides);	
+			g.setColor(Color.GRAY);
+			g.fillPolygon(polyX, polyY, sides);
+
+			//			for(int i=0;i<sides;i++){
+			//				if(i==sides-1)
+			//					g2d.drawLine(coordinateList.get(i).getX(), coordinateList.get(i).getY(), coordinateList.get(0).getX(), coordinateList.get(0).getY());
+			//				else
+			//					g2d.drawLine(coordinateList.get(i).getX(), coordinateList.get(i).getY(), coordinateList.get(i+1).getX(), coordinateList.get(i+1).getY());
+			//			}
+		}
+	}
+
+
+	public static void drawCircularObstacle(Graphics g) {
+		// TODO Auto-generated method stub
+		Iterator<?> it = board.getCircularObstacle().entrySet().iterator();
+
+		while(it.hasNext()){
+			Map.Entry<Integer, List<Circle>> pair = (Map.Entry)it.next();
+			List<Circle> coordinateList = pair.getValue();
+			g.fillOval(coordinateList.get(0).getX(),coordinateList.get(0).getY(), coordinateList.get(0).getRadius(), coordinateList.get(0).getRadius());
+
+
+		}		
+
+	}
+
+
+
+	/**
+	 * Draws obstacle
+	 * @param vision 
+	 * @param g2d
+	 */
+	public static void intersectObstacle() {
+		// TODO Auto-generated method stub
+		Iterator<?> it = board.getObstacleMap().entrySet().iterator();
+
+		while(it.hasNext()){
+			Map.Entry<Integer, List<Coordinates>> pair = (Map.Entry)it.next();
+			List<Coordinates> coordinateList = pair.getValue();
+			int sides =coordinateList.size();
+			for(int i=0;i<sides;i++){
+				if(DrawBoard.vision.contains(coordinateList.get(i).getX(),coordinateList.get(i).getY())){
+					//System.out.println("I am inside some geometry....");
+					//System.out.println(coordinateList.get(i).getX());
+					//System.out.println(coordinateList.get(i).getY());
+				} 
+				Line2D line;
+				if(i==sides-1)
+					line = new Line2D.Double(coordinateList.get(i).getX(),coordinateList.get(i).getY(),  coordinateList.get(0).getX(), coordinateList.get(0).getY());
+				else{
+
+					line = new Line2D.Double(coordinateList.get(i).getX(),coordinateList.get(i).getY(), coordinateList.get(i+1).getX(), coordinateList.get(i+1).getY());
+
+				}
+			}
+		}
+	}
 }

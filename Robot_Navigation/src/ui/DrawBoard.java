@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.awt.geom.Arc2D;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -13,6 +14,7 @@ import javax.swing.JPanel;
 import application.Navigation;
 import model.Board;
 import model.Coordinates;
+import util.ShapeUtils;
 
 /**
  * Draw board positions obstacle, start and goal state on UI
@@ -28,6 +30,7 @@ public class DrawBoard extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private Image robotImage;
 	Board board = Board.getBoardInstance();
+	public static Arc2D vision;
 	Graphics2D g2d; 
 
 	@Override
@@ -39,16 +42,21 @@ public class DrawBoard extends JPanel {
 		if(board.isFileOpen()){
 			g2d.drawImage(robotImage, board.getStart().getX(), board.getStart().getY(), this);
 			g2d.drawString("Goal", board.getGoal().getX(), board.getGoal().getY());
-			drawObstacle(g2d);
+			ShapeUtils.drawObstacle(g);
+			ShapeUtils.drawCircularObstacle(g);
+			vision=ShapeUtils.drawArc(board.getStart(),g2d);
 			Navigation nv= new Navigation(this);
 			nv.SearchPath(board);
 		}else{		
 			g2d.drawImage(robotImage, 0, 400, this);
 		}
 		g2d.dispose();
-
+		obsession();
 		repaint();
 	} 
+	public void obsession(){
+		if(board.isFileOpen()) ShapeUtils.intersectObstacle();
+	}
 
 
 	/**

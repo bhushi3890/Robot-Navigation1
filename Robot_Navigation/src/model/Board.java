@@ -25,6 +25,9 @@ public class Board{
 	Coordinates start;
 	Map<Integer,List<Coordinates>> obstacleMap;
 	Map<Integer,List<lineEquation>> lineEquations;
+    Map<Integer,List<Circle>> circularObstacle;
+	boolean isIntersect = false;
+
 	boolean isFileOpen = false;
 	
 	
@@ -49,12 +52,29 @@ public class Board{
 		
 		obstacleMap.put(key, value);
 	}
+
+	public Map<Integer, List<Circle>> getCircularObstacle() {
+		return circularObstacle;
+	}
+	public void setCircularObstacle(Integer key,List<Circle>value) {
+		
+		if(circularObstacle == null)
+			circularObstacle= new HashMap<Integer, List<Circle>>();
+		
+		circularObstacle.put(key, value);
+	}
 	public boolean isFileOpen() {
 		return isFileOpen;
 	}
 	public void setFileOpen(boolean isFileOpen) {
 		this.isFileOpen = isFileOpen;
 	}
+	public boolean isIntersect() {
+		return isIntersect;
+	}
+	public void setIntersect(boolean isIntersect) {
+		this.isIntersect = isIntersect;
+}
 	
 	/*public void calculateSlope(){
 		

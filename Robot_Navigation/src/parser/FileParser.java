@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import model.Board;
+import model.Circle;
 import model.Coordinates;
 import model.FileDetails;
 
@@ -24,6 +25,7 @@ public class FileParser {
 			File file = new File(fileDetail.getFilePath());
 			Scanner input = new Scanner(file);
 			int count=0;
+			int circleCount=0;
 			while (input.hasNextLine()) {
 				String line = input.nextLine();
 				//System.out.println(line);
@@ -54,6 +56,19 @@ public class FileParser {
 						i+=2;
 					}
 					board.setObstacleMap(count,obstacleCoordinates);
+				}else if( line.contains("Circle")){
+					List<Circle> circularObstacleCoordinates = new ArrayList<Circle>();
+					int i=0;
+					circleCount++;
+					while(getCoordinates.length > i){
+						Circle circle= new Circle();
+						circle.setX(Integer.parseInt(getCoordinates[i]));
+						circle.setY(Integer.parseInt(getCoordinates[i+1]));
+						circle.setRadius(Integer.parseInt(getCoordinates[i+2]));
+						circularObstacleCoordinates.add(circle);
+						i+=3;
+					}
+					board.setCircularObstacle(circleCount,circularObstacleCoordinates);
 				}
 			}
 			input.close();

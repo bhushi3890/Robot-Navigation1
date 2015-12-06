@@ -59,8 +59,8 @@ public class RobotApplication extends JFrame {
 		this.add(DB);
 		setTitle("Robot Navigation");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(400, 500);
-		setVisible(true);        
+		setSize(600, 600);
+		setResizable(false);
+		setVisible(true);
 	}
-
 }

@@ -11,6 +11,7 @@ import javax.swing.JMenuItem;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import model.Board;
 import model.FileDetails;
 import parser.FileParser;
 
@@ -38,9 +39,14 @@ public class AppGUI {
 		fileMenu.addSeparator();
 		fileMenu.add(exitAction);
 
+		final Board b = Board.getBoardInstance();
 		newAction.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("New....");
 				//Clean the board
+				b.setFileOpen(false);
+				new DrawBoard();
+
 			}
 		});
 
@@ -55,20 +61,30 @@ public class AppGUI {
 
 				int returnVal = chooser.showOpenDialog(frame);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					b.setFileOpen(false);
+					new DrawBoard();
 					System.out.println("You chose to open this file: "+ chooser.getSelectedFile().getName());
 					FileDetails fileDetail = new FileDetails();
 					fileDetail.setFileName(chooser.getSelectedFile().getName());
 					fileDetail.setFilePath(chooser.getSelectedFile().getAbsolutePath());
 
 					if (chooser.getSelectedFile() != null && parseFile != null) {
-					parseFile.parseDataFile(fileDetail);
-					mainFrame.add(new DrawBoard());
+						parseFile.parseDataFile(fileDetail);
+						mainFrame.add(new DrawBoard());
 					}	
 				
 				}						
 
 			}
 		});
+
+
+		exitAction.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
+
 		return menuBar;
 
 	}
