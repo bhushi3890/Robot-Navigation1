@@ -6,7 +6,6 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import model.Board;
 import ui.AppGUI;
 import ui.DrawBoard;
 
@@ -21,25 +20,21 @@ public class RobotApplication extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-    private DrawBoard DB;
+	private DrawBoard DB;
 
 	public RobotApplication() {
 		initUI();
-		//Navigation nv= new Navigation(DB);
-		//Board board = Board.getBoardInstance();
-		//nv.SearchPath(board);
 	}
 
 	public static void main(String[] args) {
 
-			try {
-				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			} catch (ClassNotFoundException | InstantiationException
-					| IllegalAccessException | UnsupportedLookAndFeelException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException
+				| IllegalAccessException | UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		EventQueue.invokeLater(new Runnable() {
 

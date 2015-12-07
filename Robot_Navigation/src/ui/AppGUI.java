@@ -49,7 +49,7 @@ public class AppGUI {
 
 			}
 		});
-
+		final DrawBoard db=new DrawBoard();
 		openAction.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String extType[] = { "txt" };
@@ -62,7 +62,6 @@ public class AppGUI {
 				int returnVal = chooser.showOpenDialog(frame);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					b.setFileOpen(false);
-					new DrawBoard();
 					System.out.println("You chose to open this file: "+ chooser.getSelectedFile().getName());
 					FileDetails fileDetail = new FileDetails();
 					fileDetail.setFileName(chooser.getSelectedFile().getName());
@@ -70,9 +69,9 @@ public class AppGUI {
 
 					if (chooser.getSelectedFile() != null && parseFile != null) {
 						parseFile.parseDataFile(fileDetail);
-						mainFrame.add(new DrawBoard());
-					}	
-				
+						mainFrame.add(db);
+					}
+			
 				}						
 
 			}

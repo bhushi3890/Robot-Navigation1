@@ -16,7 +16,9 @@ public class RobotUtils {
 
 	public static List<Node> visitedNodes = new ArrayList<Node>();;
 	public static List<Coordinates> visitedCoordinates = new ArrayList<Coordinates>();
+	public static List<Coordinates> finalVisitedCoordinates = new ArrayList<Coordinates>();
 
+	
 	private Board environment;
 	//private HashMap <Integer,List<Node>> knowledgeBase = new HashMap <Integer,List<Node>>();
 
@@ -85,6 +87,15 @@ public class RobotUtils {
 			}
 		}	
 		return node;
+	}
+	public static List<Coordinates> getFinalVisitedCoordinates() {
+		return finalVisitedCoordinates;
+	}
+	public static void setFinalVisitedCoordinates(Coordinates addCoord) {
+		if(finalVisitedCoordinates==null)
+			finalVisitedCoordinates= new ArrayList<Coordinates>();
+
+		finalVisitedCoordinates.add(addCoord);
 	}
 
 }

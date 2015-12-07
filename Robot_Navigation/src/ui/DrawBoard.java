@@ -5,12 +5,15 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.Arc2D;
+import java.awt.geom.Line2D;
 
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import model.Board;
 import model.Coordinates;
+import util.RobotUtils;
 import util.ShapeUtils;
 import application.Navigation;
 
@@ -30,33 +33,56 @@ public class DrawBoard extends JPanel {
 	Board board = Board.getBoardInstance();
 	public static Arc2D vision;
 	Graphics2D g2d; 
-    Graphics gref;
+	Graphics gref;
+	public static int count=0;
+
 	@Override
 	public void paint(Graphics g){
+
 
 		super.paintComponent( g );
 		g2d = (Graphics2D)g.create();
 		gref=g;
 		loadImage();
+
+
 		if(board.isFileOpen()){
 			g2d.drawImage(robotImage, board.getStart().getX(), board.getStart().getY(), this);
 			g2d.drawString("Goal", board.getGoal().getX(), board.getGoal().getY());
+			System.out.println("in paint");
 			ShapeUtils.drawObstacle(g);
 			ShapeUtils.drawCircularObstacle(g);
-			vision=ShapeUtils.drawArc(board.getStart(),g2d);
+			//vision=ShapeUtils.drawArc(board.getStart(),g2d);
+
 			
+		
+			if(count==0){
+				
+				Navigation nv= new Navigation(this);
+				nv.SearchPath(board);
+				count++;
+				
+			}
+			if(RobotUtils.getFinalVisitedCoordinates()!=null){
+				int i=1;
+				for(Coordinates coord:RobotUtils.getFinalVisitedCoordinates()){
+					if(i<RobotUtils.getFinalVisitedCoordinates().size()){
+						Line2D  line= new Line2D.Double(coord.getX(),coord.getY(), RobotUtils.getFinalVisitedCoordinates().get(i).getX(),RobotUtils.getFinalVisitedCoordinates().get(i).getY());
+						g2d.setColor(Color.red);
+						g2d.draw(line);
+						i++;
+					}
+				}
+			}
+
+
 		}else{		
 			g2d.drawImage(robotImage, 0, 400, this);
 		}
-		g2d.dispose();
+		revalidate();
 		repaint();
-		
-		if(board.isFileOpen()){
-			Navigation nv= new Navigation(this);
-			nv.SearchPath(board);
-		}
+		g2d.dispose();
 	} 
-
 
 
 	public void obsession(){
@@ -71,16 +97,21 @@ public class DrawBoard extends JPanel {
 	public void drawLine(Coordinates c1,Coordinates c2){
 		//g2d.setColor(Color.red);
 		//g2d.drawLine(c1.getX(),c1.getY(), c2.getX(),c2.getY());
-		
+
+
+		//ShapeUtils.drawObstacle(gref);
+		//ShapeUtils.drawCircularObstacle(gref);
 		//repaint();
-		setBackground(Color.white);
-		//drawObstacle(g2d);
-		ShapeUtils.drawObstacle(gref);
-		ShapeUtils.drawCircularObstacle(gref);
 		g2d.setColor(Color.red);
-		g2d.drawLine(c1.getX(),c1.getY(), c2.getX(),c2.getY());
-		g2d.drawImage(robotImage, c2.getX(),c2.getY(), this);
-		g2d.setColor(Color.black);
+		Line2D  line= new Line2D.Double(c1.getX(),c1.getY(), c2.getX(),c2.getY());
+		g2d.draw(line);
+		this.getComponentCount();
+		//gref.drawLine(c1.getX(),c1.getY(), c2.getX(),c2.getY());
+		//g2d.drawImage(robotImage, c2.getX(),c2.getY(), this);
+		//g2d.setColor(Color.black);
+		//g2d.dispose();
+		revalidate();
 		repaint();
+		//g2d.dispose();
 	}
 }

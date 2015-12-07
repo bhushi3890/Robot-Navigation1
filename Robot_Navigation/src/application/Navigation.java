@@ -17,6 +17,7 @@ public class Navigation {
 	public Queue<Node> priorityQueue;//To get the minimum hvalue node.
 	RobotUtils rUtil;
 	private DrawBoard DB;
+	static int count=0;
 
 	public Navigation(DrawBoard DB){
 		this.DB=DB;
@@ -24,30 +25,38 @@ public class Navigation {
 	}
 
 	public void SearchPath(Board B){
+		System.out.println("in search");
 		Node start=init(B);
 		//priorityQueue= new PriorityQueue<>(11,hDAshValueComparator);
 		findNeighbours(start);
 		if(priorityQueue!=null && !priorityQueue.isEmpty()){
 			Node succesor=priorityQueue.remove();
-			DB.drawLine(start.getC(), succesor.getC());
+			RobotUtils.setFinalVisitedCoordinates(succesor.getC());
+			//DB.drawLine(start.getC(), succesor.getC());
 			Node prev;
 			while(succesor!=null && !succesor.equal(goal)){
 				//RobotUtils.setVisitedNodes(succesor);
-				//RobotUtils.setVisitedCoordinates(succesor.getC());
-				
-				if(succesor.getC().getX()==100)
-					System.out.println("Hii");
-				
+				RobotUtils.setFinalVisitedCoordinates(succesor.getC());
+
+				//if(succesor.getC().getX()==100)
+				//System.out.println("Hii");
+
 				findNeighbours(succesor);
 				prev=succesor;				
 				succesor=priorityQueue.remove();
+				if(succesor.getC().getX()==300 && succesor.getC().getY()==20){
+					System.out.println("Reached :)");
+					return;  
+				}    
 				if(succesor.isVisited()){
 					succesor.setPathCost(prev.getPathCost()+1);
 				}else{
 					succesor.setVisited(true);
 				}
 				if(succesor!=null){
+					//count++;
 					DB.drawLine(prev.getC(), succesor.getC());
+					//return;
 				}
 			}
 		}

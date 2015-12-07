@@ -91,15 +91,17 @@ public class ShapeUtils {
 
 	public static void drawCircularObstacle(Graphics g) {
 		// TODO Auto-generated method stub
-		Iterator<?> it = board.getCircularObstacle().entrySet().iterator();
+		if(board.getCircularObstacle()!=null){
+			Iterator<?> it = board.getCircularObstacle().entrySet().iterator();
 
-		while(it.hasNext()){
-			Map.Entry<Integer, List<Circle>> pair = (Map.Entry)it.next();
-			List<Circle> coordinateList = pair.getValue();
-			g.fillOval(coordinateList.get(0).getX(),coordinateList.get(0).getY(), coordinateList.get(0).getRadius(), coordinateList.get(0).getRadius());
+			while(it.hasNext()){
+				Map.Entry<Integer, List<Circle>> pair = (Map.Entry)it.next();
+				List<Circle> coordinateList = pair.getValue();
+				g.fillOval(coordinateList.get(0).getX(),coordinateList.get(0).getY(), coordinateList.get(0).getRadius(), coordinateList.get(0).getRadius());
 
 
-		}		
+			}		
+		}
 
 	}
 
@@ -108,7 +110,7 @@ public class ShapeUtils {
 		Iterator<?> it = board.getObstacleMap().entrySet().iterator();
 		Line2D displacement = new Line2D.Double(currentNode.getC().getX(),currentNode.getC().getY(), corLeft.getX(),corLeft.getY());
 		while(it.hasNext()){
-			
+
 			Map.Entry<Integer, List<Coordinates>> pair = (Map.Entry)it.next();
 			List<Coordinates> coordinateList = pair.getValue();
 			int sides =coordinateList.size();
@@ -119,9 +121,9 @@ public class ShapeUtils {
 				else
 					line = new Line2D.Double(coordinateList.get(i).getX(),coordinateList.get(i).getY(), coordinateList.get(i+1).getX(), coordinateList.get(i+1).getY());
 				if(line.intersectsLine(displacement)){
-//					System.out.println("Hii");
-//					System.out.println( corLeft.getX());
-//					System.out.println( corLeft.getY());
+					//					System.out.println("Hii");
+					//					System.out.println( corLeft.getX());
+					//					System.out.println( corLeft.getY());
 					isIntersecting = true;
 					return isIntersecting;
 				}	
@@ -130,8 +132,8 @@ public class ShapeUtils {
 		//System.out.println("outside"+isIntersecting);
 		return isIntersecting;
 	}
-	
-	
+
+
 
 	//	/**
 	//	 * Draws obstacle
