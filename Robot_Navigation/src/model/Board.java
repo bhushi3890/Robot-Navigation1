@@ -27,7 +27,6 @@ public class Board{
 	Map<Integer,List<lineEquation>> lineEquations;
     Map<Integer,List<Circle>> circularObstacle;
 	boolean isIntersect = false;
-
 	boolean isFileOpen = false;
 	
 	

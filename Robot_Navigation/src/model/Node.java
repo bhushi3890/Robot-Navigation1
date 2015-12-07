@@ -1,10 +1,12 @@
 package model;
 
 public class Node {
+	
 	private Coordinates c;
 	private int hDash;
 	private int pathCost;
 	private int h;
+	private boolean visited=false;
 	
 	public Node(Coordinates c,int pc){
 		this.c=c;
@@ -16,6 +18,7 @@ public class Node {
 	}
 	public void setPathCost(int pathCost) {
 		this.pathCost = pathCost;
+		this.hDash=this.pathCost+this.h;
 	}
 	public double getH() {
 		return h;
@@ -45,5 +48,13 @@ public class Node {
 		}
 		
 		return false;
+	}
+
+	public boolean isVisited() {
+		return visited;
+	}
+
+	public void setVisited(boolean isVisited) {
+		this.visited = isVisited;
 	}
 }

@@ -16,6 +16,7 @@ import ui.DrawBoard;
 import model.Board;
 import model.Circle;
 import model.Coordinates;
+import model.Node;
 
 /**
  * Helper class for UI
@@ -27,7 +28,7 @@ public class ShapeUtils {
 
 	static Board board = Board.getBoardInstance();
 	public static Shape radiusShape(int points, int... radii)
-	 {
+	{
 		Polygon polygon = new Polygon();
 
 		for (int i = 0; i < points; i++)
@@ -63,7 +64,6 @@ public class ShapeUtils {
 	 * Draws obstacle
 	 * @param g2d
 	 */
-	//private void drawObstacle(Graphics2D g2d) {
 	public static void drawObstacle(Graphics g) {
 		// TODO Auto-generated method stub
 		Iterator<?> it = board.getObstacleMap().entrySet().iterator();
@@ -85,13 +85,6 @@ public class ShapeUtils {
 			//g.drawPolygon(polyX, polyY, sides);	
 			g.setColor(Color.GRAY);
 			g.fillPolygon(polyX, polyY, sides);
-
-			//			for(int i=0;i<sides;i++){
-			//				if(i==sides-1)
-			//					g2d.drawLine(coordinateList.get(i).getX(), coordinateList.get(i).getY(), coordinateList.get(0).getX(), coordinateList.get(0).getY());
-			//				else
-			//					g2d.drawLine(coordinateList.get(i).getX(), coordinateList.get(i).getY(), coordinateList.get(i+1).getX(), coordinateList.get(i+1).getY());
-			//			}
 		}
 	}
 
@@ -110,36 +103,74 @@ public class ShapeUtils {
 
 	}
 
-
-
-	/**
-	 * Draws obstacle
-	 * @param vision 
-	 * @param g2d
-	 */
-	public static void intersectObstacle() {
-		// TODO Auto-generated method stub
+	public static boolean intersectObstacle(Node currentNode, Coordinates corLeft) {
+		boolean isIntersecting = false; 
 		Iterator<?> it = board.getObstacleMap().entrySet().iterator();
-
+		Line2D displacement = new Line2D.Double(currentNode.getC().getX(),currentNode.getC().getY(), corLeft.getX(),corLeft.getY());
 		while(it.hasNext()){
+			
 			Map.Entry<Integer, List<Coordinates>> pair = (Map.Entry)it.next();
 			List<Coordinates> coordinateList = pair.getValue();
 			int sides =coordinateList.size();
 			for(int i=0;i<sides;i++){
-				if(DrawBoard.vision.contains(coordinateList.get(i).getX(),coordinateList.get(i).getY())){
-					//System.out.println("I am inside some geometry....");
-					//System.out.println(coordinateList.get(i).getX());
-					//System.out.println(coordinateList.get(i).getY());
-				} 
 				Line2D line;
 				if(i==sides-1)
 					line = new Line2D.Double(coordinateList.get(i).getX(),coordinateList.get(i).getY(),  coordinateList.get(0).getX(), coordinateList.get(0).getY());
-				else{
-
+				else
 					line = new Line2D.Double(coordinateList.get(i).getX(),coordinateList.get(i).getY(), coordinateList.get(i+1).getX(), coordinateList.get(i+1).getY());
-
-				}
+				if(line.intersectsLine(displacement)){
+//					System.out.println("Hii");
+//					System.out.println( corLeft.getX());
+//					System.out.println( corLeft.getY());
+					isIntersecting = true;
+					return isIntersecting;
+				}	
 			}
 		}
+		//System.out.println("outside"+isIntersecting);
+		return isIntersecting;
 	}
+	
+	
+
+	//	/**
+	//	 * Draws obstacle
+	//	 * @param succesor 
+	//	 * @param start 
+	//	 * @param vision 
+	//	 * @param g2d
+	//	 */
+	//	public static boolean intersectObstacle(Node start, Node succesor) {
+	//		// TODO Auto-generated method stub
+	//		boolean isIntersecting = false; 
+	//		Iterator<?> it = board.getObstacleMap().entrySet().iterator();
+	//		Line2D displacement = new Line2D.Double(start.getC().getX(),start.getC().getY(), succesor.getC().getX(),succesor.getC().getY());
+	//		while(it.hasNext()){
+	//			Map.Entry<Integer, List<Coordinates>> pair = (Map.Entry)it.next();
+	//			List<Coordinates> coordinateList = pair.getValue();
+	//			int sides =coordinateList.size();
+	//			for(int i=0;i<sides;i++){
+	//				if(displacement.contains(coordinateList.get(i).getX(),coordinateList.get(i).getY())){
+	//					System.out.println("Hmmmm...");
+	//					isIntersecting = true;
+	//					return isIntersecting;
+	//				} 
+	//
+	////				Line2D line;
+	////				if(i==sides-1)
+	////					line = new Line2D.Double(coordinateList.get(i).getX(),coordinateList.get(i).getY(),  coordinateList.get(0).getX(), coordinateList.get(0).getY());
+	////				else{
+	////					line = new Line2D.Double(coordinateList.get(i).getX(),coordinateList.get(i).getY(), coordinateList.get(i+1).getX(), coordinateList.get(i+1).getY());
+	////				}
+	////				if(displacement.intersectsLine(line)){
+	////					System.out.println("Lines are intersecting");
+	////					isIntersecting=true;
+	////					return isIntersecting;
+	////				}
+	//			}
+	//		}
+	//		return isIntersecting;
+	//	}
+
+
 }

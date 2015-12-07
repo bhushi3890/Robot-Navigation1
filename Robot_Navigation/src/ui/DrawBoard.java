@@ -1,20 +1,18 @@
 package ui;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.awt.geom.Arc2D;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-import application.Navigation;
 import model.Board;
 import model.Coordinates;
 import util.ShapeUtils;
+import application.Navigation;
 
 /**
  * Draw board positions obstacle, start and goal state on UI
@@ -32,12 +30,13 @@ public class DrawBoard extends JPanel {
 	Board board = Board.getBoardInstance();
 	public static Arc2D vision;
 	Graphics2D g2d; 
-
+    Graphics gref;
 	@Override
 	public void paint(Graphics g){
 
 		super.paintComponent( g );
 		g2d = (Graphics2D)g.create();
+		gref=g;
 		loadImage();
 		if(board.isFileOpen()){
 			g2d.drawImage(robotImage, board.getStart().getX(), board.getStart().getY(), this);
@@ -45,51 +44,43 @@ public class DrawBoard extends JPanel {
 			ShapeUtils.drawObstacle(g);
 			ShapeUtils.drawCircularObstacle(g);
 			vision=ShapeUtils.drawArc(board.getStart(),g2d);
-			Navigation nv= new Navigation(this);
-			nv.SearchPath(board);
+			
 		}else{		
 			g2d.drawImage(robotImage, 0, 400, this);
 		}
 		g2d.dispose();
-		obsession();
 		repaint();
-	} 
-	public void obsession(){
-		if(board.isFileOpen()) ShapeUtils.intersectObstacle();
-	}
-
-
-	/**
-	 * Draws obstacle
-	 * @param g2d
-	 */
-	private void drawObstacle(Graphics2D g2d) {
-		// TODO Auto-generated method stub
-		Iterator<?> it = board.getObstacleMap().entrySet().iterator();
-
-		while(it.hasNext()){
-			Map.Entry<Integer, List<Coordinates>> pair = (Map.Entry)it.next();
-			List<Coordinates> coordinateList = pair.getValue();
-			int sides =coordinateList.size();
-			for(int i=0;i<sides;i++){
-				if(i==sides-1)
-					g2d.drawLine(coordinateList.get(i).getX(), coordinateList.get(i).getY(), coordinateList.get(0).getX(), coordinateList.get(0).getY());
-				else
-					g2d.drawLine(coordinateList.get(i).getX(), coordinateList.get(i).getY(), coordinateList.get(i+1).getX(), coordinateList.get(i+1).getY());
-
-
-			}
-		}
 		
+		if(board.isFileOpen()){
+			Navigation nv= new Navigation(this);
+			nv.SearchPath(board);
+		}
+	} 
+
+
+
+	public void obsession(){
+		//if(board.isFileOpen()) ShapeUtils.intersectObstacle();
 	}
 
 	private Image loadImage(){
 		ImageIcon robotIcon = new ImageIcon(this.getClass().getResource("/images/Robot_opt.png"));
 		return robotImage = robotIcon.getImage(); 
 	}
-	
+
 	public void drawLine(Coordinates c1,Coordinates c2){
+		//g2d.setColor(Color.red);
+		//g2d.drawLine(c1.getX(),c1.getY(), c2.getX(),c2.getY());
+		
+		//repaint();
+		setBackground(Color.white);
+		//drawObstacle(g2d);
+		ShapeUtils.drawObstacle(gref);
+		ShapeUtils.drawCircularObstacle(gref);
+		g2d.setColor(Color.red);
 		g2d.drawLine(c1.getX(),c1.getY(), c2.getX(),c2.getY());
+		g2d.drawImage(robotImage, c2.getX(),c2.getY(), this);
+		g2d.setColor(Color.black);
 		repaint();
 	}
 }
