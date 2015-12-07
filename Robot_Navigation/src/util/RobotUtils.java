@@ -31,9 +31,9 @@ public class RobotUtils {
 		Coordinates goal=environment.getGoal();
 		n.setH(calulateDistance(n.getC(),goal));
 	}
-	private int calulateDistance(Coordinates C1, Coordinates C2){
+	private double calulateDistance(Coordinates C1, Coordinates C2){
 
-		return (int)(Math.sqrt((C1.getX()-C2.getX())*(C1.getX()-C2.getX()) + (C1.getY()-C2.getY())*(C1.getY()-C2.getY()))); 
+		return (double)(Math.sqrt((C1.getX()-C2.getX())*(C1.getX()-C2.getX()) + (C1.getY()-C2.getY())*(C1.getY()-C2.getY()))); 
 	}
 	/*public HashMap <Integer,List<Node>> getKnowledgeBase() {
 		return knowledgeBase;
@@ -96,6 +96,14 @@ public class RobotUtils {
 			finalVisitedCoordinates= new ArrayList<Coordinates>();
 
 		finalVisitedCoordinates.add(addCoord);
+	}
+	
+	public static boolean crossingBondary(Coordinates c){
+		if(c.getX()<0 || c.getX()>600 || c.getY()<0 || c.getY()>600){
+			return true;
+	
+		}
+		return false;
 	}
 
 }

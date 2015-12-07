@@ -3,27 +3,27 @@ package model;
 public class Node {
 	
 	private Coordinates c;
-	private int hDash;
-	private int pathCost;
-	private int h;
+	private double hDash;
+	private double pathCost;
+	private double h;
 	private boolean visited=false;
 	
-	public Node(Coordinates c,int pc){
+	public Node(Coordinates c,double pc){
 		this.c=c;
 		this.pathCost=pc;
 	}
 	
-	public int getPathCost() {
+	public double getPathCost() {
 		return pathCost;
 	}
-	public void setPathCost(int pathCost) {
+	public void setPathCost(double pathCost) {
 		this.pathCost = pathCost;
 		this.hDash=this.pathCost+this.h;
 	}
 	public double getH() {
 		return h;
 	}
-	public void setH(int h) {
+	public void setH(double h) {
 		this.h = h;
 		this.hDash=this.pathCost+this.h;
 	}

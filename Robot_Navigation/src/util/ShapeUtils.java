@@ -133,7 +133,31 @@ public class ShapeUtils {
 		return isIntersecting;
 	}
 
+	public static boolean isGoalVisibleFromCurrentPosition(Coordinates currentNode ) {
+		// TODO Auto-generated method stub
+		boolean visibility = true;
+		Line2D displacement = new Line2D.Double(currentNode.getX(),currentNode.getY(), board.getGoal().getX(),board.getGoal().getY());
+		Iterator<?> it = board.getObstacleMap().entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<Integer, List<Coordinates>> pair = (Map.Entry)it.next();
+			List<Coordinates> coordinateList = pair.getValue();
+			int sides=coordinateList.size();
+			for(int i=0;i<sides;i++){
+				Line2D line;
+				if(i==sides-1)
+					line = new Line2D.Double(coordinateList.get(i).getX(),coordinateList.get(i).getY(),  coordinateList.get(0).getX(), coordinateList.get(0).getY());
+				else
+					line = new Line2D.Double(coordinateList.get(i).getX(),coordinateList.get(i).getY(), coordinateList.get(i+1).getX(), coordinateList.get(i+1).getY());
 
+				if(line.intersectsLine(displacement)){
+					visibility=false;
+					return visibility;
+					//return line;
+				}	
+			}	
+		}
+		return visibility;
+	}
 
 	//	/**
 	//	 * Draws obstacle

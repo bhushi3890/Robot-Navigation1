@@ -23,7 +23,7 @@ public class Navigation {
 		this.DB=DB;
 
 	}
-
+    
 	public void SearchPath(Board B){
 		System.out.println("in search");
 		Node start=init(B);
@@ -37,27 +37,34 @@ public class Navigation {
 			while(succesor!=null && !succesor.equal(goal)){
 				//RobotUtils.setVisitedNodes(succesor);
 				RobotUtils.setFinalVisitedCoordinates(succesor.getC());
-
+				boolean isVisible=ShapeUtils.isGoalVisibleFromCurrentPosition(succesor.getC());
 				//if(succesor.getC().getX()==100)
 				//System.out.println("Hii");
-
-				findNeighbours(succesor);
-				prev=succesor;				
-				succesor=priorityQueue.remove();
-				if(succesor.getC().getX()==300 && succesor.getC().getY()==20){
-					System.out.println("Reached :)");
-					return;  
-				}    
-				if(succesor.isVisited()){
-					succesor.setPathCost(prev.getPathCost()+1);
+				if(!isVisible){	
+					findNeighbours(succesor);
+					prev=succesor;				
+					succesor=priorityQueue.remove();
+					if(succesor.getC().getX()==goal.getX() && succesor.getC().getY()==goal.getY()){
+						System.out.println("Reached :)");
+						return;  
+					}    
+					if(succesor.isVisited()){
+						succesor.setPathCost(prev.getPathCost()+1);
+					}else{
+						succesor.setVisited(true);
+					}
+					/*if(succesor!=null){
+						if(count++==400000)
+							return;
+						//DB.drawLine(prev.getC(), succesor.getC());
+						//return;
+					}*/
 				}else{
-					succesor.setVisited(true);
+					
+					RobotUtils.setFinalVisitedCoordinates(goal);
+					return;
 				}
-				if(succesor!=null){
-					//count++;
-					DB.drawLine(prev.getC(), succesor.getC());
-					//return;
-				}
+					
 			}
 		}
 	}
@@ -70,7 +77,7 @@ public class Navigation {
 		start=B.getStart();
 		goal=B.getGoal();
 		rUtil= new RobotUtils(B);
-		startNode= new Node(start,0);
+		startNode= new Node(start,0.0);
 		rUtil.calculateHeuristic(startNode);
 		return startNode;
 	}
@@ -80,123 +87,131 @@ public class Navigation {
 		Coordinates c=currentNode.getC();
 		int x=c.getX();
 		int y=c.getY();
-		priorityQueue=new PriorityQueue<>(11,hDAshValueComparator);
+		priorityQueue=new PriorityQueue<Node>(11,hDAshValueComparator);
 
 		//left Neighbor
-		Coordinates CorLeft=new Coordinates(x-1,y);
+		Coordinates CorLeft=new Coordinates(x-15,y);
 		Node leftNode=null;
-		if(RobotUtils.searchInVisitedCoordinates(CorLeft))
+		if(RobotUtils.searchInVisitedCoordinates(CorLeft)){
 			leftNode=RobotUtils.searchNode(CorLeft);
-		else{
+			//leftNode.setVisited(true);
+		}else{
 			leftNode= new Node(CorLeft,currentNode.getPathCost()+1);
 			rUtil.calculateHeuristic(leftNode);
 			RobotUtils.setVisitedNodes(leftNode);
 			RobotUtils.setVisitedCoordinates(leftNode.getC());
 		}
-		if(!ShapeUtils.intersectObstacle(currentNode,CorLeft) && leftNode!=null)
+		if(!ShapeUtils.intersectObstacle(currentNode,CorLeft) && leftNode!=null && !RobotUtils.crossingBondary(CorLeft))
 			priorityQueue.add(leftNode);
 
 
 		//right Neighbor
-		Coordinates CorRight=new Coordinates(x+1,y);
+		Coordinates CorRight=new Coordinates(x+15,y);
 		Node rightNode= null;
-		if(RobotUtils.searchInVisitedCoordinates(CorRight))
+		if(RobotUtils.searchInVisitedCoordinates(CorRight)){
 			rightNode=RobotUtils.searchNode(CorRight);
-		else{
+			//rightNode.setVisited(true);
+		}else{
 			rightNode=new Node(CorRight,currentNode.getPathCost()+1);
 			rUtil.calculateHeuristic(rightNode);
 			RobotUtils.setVisitedNodes(rightNode);
 			RobotUtils.setVisitedCoordinates(rightNode.getC());
 		}
-		if(!ShapeUtils.intersectObstacle(currentNode,CorRight) && rightNode!=null)
+		if(!ShapeUtils.intersectObstacle(currentNode,CorRight) && rightNode!=null && !RobotUtils.crossingBondary(CorRight))
 			priorityQueue.add(rightNode);
 
 
 		//Top Neighbor
-		Coordinates CorTop=new Coordinates(x,y+1);
+		Coordinates CorTop=new Coordinates(x,y+15);
 		Node topNode= null;
-		if(RobotUtils.searchInVisitedCoordinates(CorTop))
-			topNode=RobotUtils.searchNode(CorTop);
-		else{
+		if(RobotUtils.searchInVisitedCoordinates(CorTop)){
+			//topNode=RobotUtils.searchNode(CorTop);
+			//topNode.setVisited(true);
+		}else{
 			topNode=new Node(CorTop,currentNode.getPathCost()+1);
 			rUtil.calculateHeuristic(topNode);
 			RobotUtils.setVisitedNodes(topNode);
 			RobotUtils.setVisitedCoordinates(topNode.getC());
 		}
-		if(!ShapeUtils.intersectObstacle(currentNode,CorTop) && topNode!=null)
+		if(!ShapeUtils.intersectObstacle(currentNode,CorTop) && topNode!=null && !RobotUtils.crossingBondary(CorTop))
 			priorityQueue.add(topNode);
 
 		//Down Neighbor
-		Coordinates CorDown=new Coordinates(x,y-1);
+		Coordinates CorDown=new Coordinates(x,y-15);
 		Node downNode= null;
-		if(RobotUtils.searchInVisitedCoordinates(CorDown))
+		if(RobotUtils.searchInVisitedCoordinates(CorDown)){
 			downNode=RobotUtils.searchNode(CorDown);
-		else{
+			//downNode.setVisited(true);
+		}else{
 			downNode=new Node(CorDown,currentNode.getPathCost()+1);
 			rUtil.calculateHeuristic(downNode);
 			RobotUtils.setVisitedNodes(downNode);
 			RobotUtils.setVisitedCoordinates(downNode.getC());
 
 		}
-		if(!ShapeUtils.intersectObstacle(currentNode,CorDown) && downNode!=null)
+		if(!ShapeUtils.intersectObstacle(currentNode,CorDown) && downNode!=null && !RobotUtils.crossingBondary(CorDown))
 			priorityQueue.add(downNode);
 
 		//North-West Neighbor
-		Coordinates CorLeftTop=new Coordinates(x-1,y+1);
+		Coordinates CorLeftTop=new Coordinates(x-15,y+15);
 		Node leftTopNode= null;
-		if(RobotUtils.searchInVisitedCoordinates(CorLeftTop))
+		if(RobotUtils.searchInVisitedCoordinates(CorLeftTop)){
 			leftTopNode=RobotUtils.searchNode(CorLeftTop);
-		else{
+			//leftTopNode.setVisited(true);
+		}else{
 			leftTopNode=new Node(CorLeftTop,currentNode.getPathCost()+1);
 			rUtil.calculateHeuristic(leftTopNode);
 			RobotUtils.setVisitedNodes(leftTopNode);
 			RobotUtils.setVisitedCoordinates(leftTopNode.getC());
 		}
-		if(!ShapeUtils.intersectObstacle(currentNode,CorLeftTop) && leftTopNode!=null)
+		if(!ShapeUtils.intersectObstacle(currentNode,CorLeftTop) && leftTopNode!=null && !RobotUtils.crossingBondary(CorLeftTop))
 			priorityQueue.add(leftTopNode);
 
 		//North-East Neighbor
-		Coordinates CorRightTop=new Coordinates(x+1,y+1);
+		Coordinates CorRightTop=new Coordinates(x+15,y+15);
 		Node rightTopNode= null;
-		if(RobotUtils.searchInVisitedCoordinates(CorRightTop))
+		if(RobotUtils.searchInVisitedCoordinates(CorRightTop)){
 			rightTopNode=RobotUtils.searchNode(CorRightTop);
-		else{
+			//rightTopNode.setVisited(true);
+		}else{
 			rightTopNode=new Node(CorRightTop,currentNode.getPathCost()+1);
 			rUtil.calculateHeuristic(rightTopNode);
 			RobotUtils.setVisitedNodes(rightTopNode);
 			RobotUtils.setVisitedCoordinates(rightTopNode.getC());
 
 		}
-		if(!ShapeUtils.intersectObstacle(currentNode,CorRightTop) && rightTopNode!=null)
+		if(!ShapeUtils.intersectObstacle(currentNode,CorRightTop) && rightTopNode!=null && !RobotUtils.crossingBondary(CorRightTop))
 			priorityQueue.add(rightTopNode);
 
 		//South-East Neighbor
-		Coordinates CorRightDown=new Coordinates(x+1,y-1);
+		Coordinates CorRightDown=new Coordinates(x+15,y-15);
 		Node rightDownNode= null;
-		if(RobotUtils.searchInVisitedCoordinates(CorRightDown))
+		if(RobotUtils.searchInVisitedCoordinates(CorRightDown)){
 			rightDownNode=RobotUtils.searchNode(CorRightDown);
-		else{
+			//rightDownNode.setVisited(true);
+		}else{
 			rightDownNode=new Node(CorRightDown,currentNode.getPathCost()+1);
 			rUtil.calculateHeuristic(rightDownNode);
 			RobotUtils.setVisitedNodes(rightDownNode);
 			RobotUtils.setVisitedCoordinates(rightDownNode.getC());
 		}
-		if(!ShapeUtils.intersectObstacle(currentNode,CorRightDown) && rightDownNode!=null)
+		if(!ShapeUtils.intersectObstacle(currentNode,CorRightDown) && rightDownNode!=null && !RobotUtils.crossingBondary(CorRightDown))
 			priorityQueue.add(rightDownNode);
 
 		//South-West Neighbor
-		Coordinates CorLeftDown=new Coordinates(x-1,y-1);
+		Coordinates CorLeftDown=new Coordinates(x-15,y-15);
 		Node leftDownNode= null;
-		if(RobotUtils.searchInVisitedCoordinates(CorLeftDown))
+		if(RobotUtils.searchInVisitedCoordinates(CorLeftDown)){
 			leftDownNode=RobotUtils.searchNode(CorLeftDown);
-		else{
+			//leftDownNode.setVisited(true);
+		}else{
 
 			leftDownNode = new Node(CorLeftDown,currentNode.getPathCost()+1);
 			rUtil.calculateHeuristic(leftDownNode);
 			RobotUtils.setVisitedNodes(leftDownNode);
 			RobotUtils.setVisitedCoordinates(leftDownNode.getC());
 		}
-		if(!ShapeUtils.intersectObstacle(currentNode,CorLeftDown) && leftDownNode!=null)
+		if(!ShapeUtils.intersectObstacle(currentNode,CorLeftDown) && leftDownNode!=null && !RobotUtils.crossingBondary(CorLeftDown))
 			priorityQueue.add(leftDownNode);
 
 		/*System.out.println(priorityQueue.size());
@@ -210,7 +225,8 @@ public class Navigation {
 
 		@Override
 		public int compare(Node n1, Node n2) {
-			return (int) (n1.gethDash() - n2.gethDash());
+			
+			return  ((n1.gethDash() <= n2.gethDash())? -1 : 1 );
 		}
 	};
 }

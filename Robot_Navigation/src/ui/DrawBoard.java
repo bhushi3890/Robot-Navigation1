@@ -49,12 +49,11 @@ public class DrawBoard extends JPanel {
 		if(board.isFileOpen()){
 			g2d.drawImage(robotImage, board.getStart().getX(), board.getStart().getY(), this);
 			g2d.drawString("Goal", board.getGoal().getX(), board.getGoal().getY());
-			System.out.println("in paint");
+			//.out.println("in paint");
 			ShapeUtils.drawObstacle(g);
 			ShapeUtils.drawCircularObstacle(g);
 			//vision=ShapeUtils.drawArc(board.getStart(),g2d);
-
-			
+						
 		
 			if(count==0){
 				
