@@ -11,14 +11,11 @@ import ui.DrawBoard;
 
 /**
  * Robot Application
- * @author apoorva
+ * @author apoorva-bhushan
  *
  */
 public class RobotApplication extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private DrawBoard DB;
 
@@ -47,6 +44,10 @@ public class RobotApplication extends JFrame {
 	}
 
 
+
+	/**
+	 * Initialize UI
+	 */
 	private void initUI() {
 
 		this.setJMenuBar(AppGUI.addMenuBar(this));

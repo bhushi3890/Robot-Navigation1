@@ -8,7 +8,6 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.Line2D;
 
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import model.Board;
@@ -49,18 +48,15 @@ public class DrawBoard extends JPanel {
 		if(board.isFileOpen()){
 			g2d.drawImage(robotImage, board.getStart().getX(), board.getStart().getY(), this);
 			g2d.drawString("Goal", board.getGoal().getX(), board.getGoal().getY());
-			//.out.println("in paint");
 			ShapeUtils.drawObstacle(g);
 			ShapeUtils.drawCircularObstacle(g);
-			//vision=ShapeUtils.drawArc(board.getStart(),g2d);
-						
 		
 			if(count==0){
-				
+
 				Navigation nv= new Navigation(this);
 				nv.SearchPath(board);
 				count++;
-				
+
 			}
 			if(RobotUtils.getFinalVisitedCoordinates()!=null){
 				int i=1;
@@ -84,10 +80,10 @@ public class DrawBoard extends JPanel {
 	} 
 
 
-	public void obsession(){
-		//if(board.isFileOpen()) ShapeUtils.intersectObstacle();
-	}
-
+	/**
+	 * 
+	 * @return
+	 */
 	private Image loadImage(){
 		ImageIcon robotIcon = new ImageIcon(this.getClass().getResource("/images/Robot_opt.png"));
 		return robotImage = robotIcon.getImage(); 

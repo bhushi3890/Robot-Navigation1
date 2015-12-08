@@ -16,30 +16,30 @@ public class Navigation {
 	private Coordinates goal;
 	public Queue<Node> priorityQueue;//To get the minimum hvalue node.
 	RobotUtils rUtil;
-	private DrawBoard DB;
+	private DrawBoard drawBoard;
 	static int count=0;
 
 	public Navigation(DrawBoard DB){
-		this.DB=DB;
+		this.drawBoard=DB;
 
 	}
     
-	public void SearchPath(Board B){
+	/**
+	 * Search the path for robot to move from initial state to goal state
+	 * @param board
+	 */
+	public void SearchPath(Board board){
 		System.out.println("in search");
-		Node start=init(B);
-		//priorityQueue= new PriorityQueue<>(11,hDAshValueComparator);
+		Node start=init(board);
 		findNeighbours(start);
 		if(priorityQueue!=null && !priorityQueue.isEmpty()){
 			Node succesor=priorityQueue.remove();
 			RobotUtils.setFinalVisitedCoordinates(succesor.getC());
-			//DB.drawLine(start.getC(), succesor.getC());
 			Node prev;
 			while(succesor!=null && !succesor.equal(goal)){
 				//RobotUtils.setVisitedNodes(succesor);
 				RobotUtils.setFinalVisitedCoordinates(succesor.getC());
 				boolean isVisible=ShapeUtils.isGoalVisibleFromCurrentPosition(succesor.getC());
-				//if(succesor.getC().getX()==100)
-				//System.out.println("Hii");
 				if(!isVisible){	
 					findNeighbours(succesor);
 					prev=succesor;				
@@ -53,12 +53,6 @@ public class Navigation {
 					}else{
 						succesor.setVisited(true);
 					}
-					/*if(succesor!=null){
-						if(count++==400000)
-							return;
-						//DB.drawLine(prev.getC(), succesor.getC());
-						//return;
-					}*/
 				}else{
 					
 					RobotUtils.setFinalVisitedCoordinates(goal);
@@ -90,7 +84,7 @@ public class Navigation {
 		priorityQueue=new PriorityQueue<Node>(11,hDAshValueComparator);
 
 		//left Neighbor
-		Coordinates CorLeft=new Coordinates(x-15,y);
+		Coordinates CorLeft=new Coordinates(x-10,y);
 		Node leftNode=null;
 		if(RobotUtils.searchInVisitedCoordinates(CorLeft)){
 			leftNode=RobotUtils.searchNode(CorLeft);
@@ -101,12 +95,13 @@ public class Navigation {
 			RobotUtils.setVisitedNodes(leftNode);
 			RobotUtils.setVisitedCoordinates(leftNode.getC());
 		}
-		if(!ShapeUtils.intersectObstacle(currentNode,CorLeft) && leftNode!=null && !RobotUtils.crossingBondary(CorLeft))
+		if(!ShapeUtils.intersectObstacle(currentNode,CorLeft) && leftNode!=null && 
+				!RobotUtils.crossingBondary(CorLeft) && !ShapeUtils.circleLineIntersection(currentNode.getC(),CorLeft))
 			priorityQueue.add(leftNode);
 
 
 		//right Neighbor
-		Coordinates CorRight=new Coordinates(x+15,y);
+		Coordinates CorRight=new Coordinates(x+10,y);
 		Node rightNode= null;
 		if(RobotUtils.searchInVisitedCoordinates(CorRight)){
 			rightNode=RobotUtils.searchNode(CorRight);
@@ -117,15 +112,16 @@ public class Navigation {
 			RobotUtils.setVisitedNodes(rightNode);
 			RobotUtils.setVisitedCoordinates(rightNode.getC());
 		}
-		if(!ShapeUtils.intersectObstacle(currentNode,CorRight) && rightNode!=null && !RobotUtils.crossingBondary(CorRight))
+		if(!ShapeUtils.intersectObstacle(currentNode,CorRight) && rightNode!=null 
+				&& !RobotUtils.crossingBondary(CorRight) && !ShapeUtils.circleLineIntersection(currentNode.getC(),CorRight))
 			priorityQueue.add(rightNode);
 
 
 		//Top Neighbor
-		Coordinates CorTop=new Coordinates(x,y+15);
+		Coordinates CorTop=new Coordinates(x,y+10);
 		Node topNode= null;
 		if(RobotUtils.searchInVisitedCoordinates(CorTop)){
-			//topNode=RobotUtils.searchNode(CorTop);
+			topNode=RobotUtils.searchNode(CorTop);
 			//topNode.setVisited(true);
 		}else{
 			topNode=new Node(CorTop,currentNode.getPathCost()+1);
@@ -133,11 +129,12 @@ public class Navigation {
 			RobotUtils.setVisitedNodes(topNode);
 			RobotUtils.setVisitedCoordinates(topNode.getC());
 		}
-		if(!ShapeUtils.intersectObstacle(currentNode,CorTop) && topNode!=null && !RobotUtils.crossingBondary(CorTop))
+		if(!ShapeUtils.intersectObstacle(currentNode,CorTop) && topNode!=null &&
+				!RobotUtils.crossingBondary(CorTop) && !ShapeUtils.circleLineIntersection(currentNode.getC(),CorTop))
 			priorityQueue.add(topNode);
 
 		//Down Neighbor
-		Coordinates CorDown=new Coordinates(x,y-15);
+		Coordinates CorDown=new Coordinates(x,y-10);
 		Node downNode= null;
 		if(RobotUtils.searchInVisitedCoordinates(CorDown)){
 			downNode=RobotUtils.searchNode(CorDown);
@@ -149,11 +146,12 @@ public class Navigation {
 			RobotUtils.setVisitedCoordinates(downNode.getC());
 
 		}
-		if(!ShapeUtils.intersectObstacle(currentNode,CorDown) && downNode!=null && !RobotUtils.crossingBondary(CorDown))
+		if(!ShapeUtils.intersectObstacle(currentNode,CorDown) && downNode!=null &&
+				!RobotUtils.crossingBondary(CorDown) && !ShapeUtils.circleLineIntersection(currentNode.getC(),CorDown))
 			priorityQueue.add(downNode);
 
 		//North-West Neighbor
-		Coordinates CorLeftTop=new Coordinates(x-15,y+15);
+		Coordinates CorLeftTop=new Coordinates(x-10,y+10);
 		Node leftTopNode= null;
 		if(RobotUtils.searchInVisitedCoordinates(CorLeftTop)){
 			leftTopNode=RobotUtils.searchNode(CorLeftTop);
@@ -164,11 +162,12 @@ public class Navigation {
 			RobotUtils.setVisitedNodes(leftTopNode);
 			RobotUtils.setVisitedCoordinates(leftTopNode.getC());
 		}
-		if(!ShapeUtils.intersectObstacle(currentNode,CorLeftTop) && leftTopNode!=null && !RobotUtils.crossingBondary(CorLeftTop))
+		if(!ShapeUtils.intersectObstacle(currentNode,CorLeftTop) && leftTopNode!=null 
+				&& !RobotUtils.crossingBondary(CorLeftTop)&& !ShapeUtils.circleLineIntersection(currentNode.getC(),CorLeftTop))
 			priorityQueue.add(leftTopNode);
 
 		//North-East Neighbor
-		Coordinates CorRightTop=new Coordinates(x+15,y+15);
+		Coordinates CorRightTop=new Coordinates(x+10,y+10);
 		Node rightTopNode= null;
 		if(RobotUtils.searchInVisitedCoordinates(CorRightTop)){
 			rightTopNode=RobotUtils.searchNode(CorRightTop);
@@ -180,11 +179,12 @@ public class Navigation {
 			RobotUtils.setVisitedCoordinates(rightTopNode.getC());
 
 		}
-		if(!ShapeUtils.intersectObstacle(currentNode,CorRightTop) && rightTopNode!=null && !RobotUtils.crossingBondary(CorRightTop))
+		if(!ShapeUtils.intersectObstacle(currentNode,CorRightTop) && rightTopNode!=null && 
+				!RobotUtils.crossingBondary(CorRightTop)&& !ShapeUtils.circleLineIntersection(currentNode.getC(),CorRightTop))
 			priorityQueue.add(rightTopNode);
 
 		//South-East Neighbor
-		Coordinates CorRightDown=new Coordinates(x+15,y-15);
+		Coordinates CorRightDown=new Coordinates(x+10,y-10);
 		Node rightDownNode= null;
 		if(RobotUtils.searchInVisitedCoordinates(CorRightDown)){
 			rightDownNode=RobotUtils.searchNode(CorRightDown);
@@ -195,11 +195,12 @@ public class Navigation {
 			RobotUtils.setVisitedNodes(rightDownNode);
 			RobotUtils.setVisitedCoordinates(rightDownNode.getC());
 		}
-		if(!ShapeUtils.intersectObstacle(currentNode,CorRightDown) && rightDownNode!=null && !RobotUtils.crossingBondary(CorRightDown))
+		if(!ShapeUtils.intersectObstacle(currentNode,CorRightDown) && rightDownNode!=null && 
+				!RobotUtils.crossingBondary(CorRightDown)&& !ShapeUtils.circleLineIntersection(currentNode.getC(),CorRightDown))
 			priorityQueue.add(rightDownNode);
 
 		//South-West Neighbor
-		Coordinates CorLeftDown=new Coordinates(x-15,y-15);
+		Coordinates CorLeftDown=new Coordinates(x-10,y-10);
 		Node leftDownNode= null;
 		if(RobotUtils.searchInVisitedCoordinates(CorLeftDown)){
 			leftDownNode=RobotUtils.searchNode(CorLeftDown);
@@ -211,15 +212,11 @@ public class Navigation {
 			RobotUtils.setVisitedNodes(leftDownNode);
 			RobotUtils.setVisitedCoordinates(leftDownNode.getC());
 		}
-		if(!ShapeUtils.intersectObstacle(currentNode,CorLeftDown) && leftDownNode!=null && !RobotUtils.crossingBondary(CorLeftDown))
+		if(!ShapeUtils.intersectObstacle(currentNode,CorLeftDown) && leftDownNode!=null &&
+				!RobotUtils.crossingBondary(CorLeftDown) && !ShapeUtils.circleLineIntersection(currentNode.getC(),CorLeftDown))
 			priorityQueue.add(leftDownNode);
-
-		/*System.out.println(priorityQueue.size());
-		for(Node obj:priorityQueue){
-			System.out.println(obj.getC().getX());
-			System.out.println(obj.getC().getY());
-		}*/
 	}
+
 
 	public static Comparator<Node> hDAshValueComparator = new Comparator<Node>(){
 

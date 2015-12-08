@@ -14,6 +14,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import model.Board;
 import model.FileDetails;
 import parser.FileParser;
+import util.RobotUtils;
+import util.ShapeUtils;
 
 /**
  * Creates GUI for Application
@@ -22,6 +24,11 @@ import parser.FileParser;
  */
 public class AppGUI {
 
+	/**
+	 * Create a menu bar
+	 * @param mainFrame
+	 * @return
+	 */
 	public static JMenuBar addMenuBar(final JFrame mainFrame){
 
 		JMenuBar menuBar = new JMenuBar();
@@ -61,13 +68,25 @@ public class AppGUI {
 
 				int returnVal = chooser.showOpenDialog(frame);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					b.setFileOpen(false);
+					//b.setFileOpen(false);
 					System.out.println("You chose to open this file: "+ chooser.getSelectedFile().getName());
 					FileDetails fileDetail = new FileDetails();
 					fileDetail.setFileName(chooser.getSelectedFile().getName());
 					fileDetail.setFilePath(chooser.getSelectedFile().getAbsolutePath());
-
+					
+//				
 					if (chooser.getSelectedFile() != null && parseFile != null) {
+						RobotUtils.getVisitedCoordinates().clear();
+						RobotUtils.getFinalVisitedCoordinates().clear();
+						RobotUtils.getVisitedNodes().clear();
+						
+						b.clearObstacleMap();
+				
+						
+						DrawBoard.count=0;
+						
+
+						
 						parseFile.parseDataFile(fileDetail);
 						mainFrame.add(db);
 					}

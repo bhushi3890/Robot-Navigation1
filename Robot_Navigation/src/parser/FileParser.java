@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import util.ShapeUtils;
 import model.Board;
 import model.Circle;
 import model.Coordinates;
@@ -65,10 +66,11 @@ public class FileParser {
 						circle.setX(Integer.parseInt(getCoordinates[i]));
 						circle.setY(Integer.parseInt(getCoordinates[i+1]));
 						circle.setRadius(Integer.parseInt(getCoordinates[i+2]));
-						circularObstacleCoordinates.add(circle);
+						ShapeUtils.findCenterPoint(circle);
+						circularObstacleCoordinates.add(circle);		
 						i+=3;
 					}
-					board.setCircularObstacle(circleCount,circularObstacleCoordinates);
+					board.setCircularObstacle(circleCount,circularObstacleCoordinates);					
 				}
 			}
 			input.close();

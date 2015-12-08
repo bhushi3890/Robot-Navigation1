@@ -7,29 +7,29 @@ import java.util.Map;
 
 /**
  * POJO containing board details
- * @author apoorva
+ * @author apoorva-bhushan
  *
  */
 public class Board{
 
 	static Board boardInstance = null;
-	
+
 	public static Board getBoardInstance(){
 		if(boardInstance == null)
 			boardInstance = new Board();
-		
+
 		return boardInstance;
 	}
-	
+
 	Coordinates goal;
 	Coordinates start;
 	Map<Integer,List<Coordinates>> obstacleMap;
 	Map<Integer,List<lineEquation>> lineEquations;
-    Map<Integer,List<Circle>> circularObstacle;
+	Map<Integer,List<Circle>> circularObstacle;
 	boolean isIntersect = false;
 	boolean isFileOpen = false;
-	
-	
+
+
 	public Coordinates getGoal() {
 		return goal;
 	}
@@ -48,18 +48,23 @@ public class Board{
 	public void setObstacleMap(Integer key, List<Coordinates> value) {
 		if(obstacleMap == null)
 			obstacleMap= new HashMap<Integer, List<Coordinates>>();
-		
+
 		obstacleMap.put(key, value);
+	}
+
+	public void clearObstacleMap() {
+		if(obstacleMap!= null)
+			obstacleMap = new HashMap<Integer, List<Coordinates>>();
 	}
 
 	public Map<Integer, List<Circle>> getCircularObstacle() {
 		return circularObstacle;
 	}
 	public void setCircularObstacle(Integer key,List<Circle>value) {
-		
+
 		if(circularObstacle == null)
 			circularObstacle= new HashMap<Integer, List<Circle>>();
-		
+
 		circularObstacle.put(key, value);
 	}
 	public boolean isFileOpen() {
@@ -73,10 +78,10 @@ public class Board{
 	}
 	public void setIntersect(boolean isIntersect) {
 		this.isIntersect = isIntersect;
-}
-	
+	}
+
 	/*public void calculateSlope(){
-		
+
 		Iterator<?> it = boardInstance.getObstacleMap().entrySet().iterator();
 
 		while(it.hasNext()){
@@ -97,9 +102,9 @@ public class Board{
 			}
 		}
 
-		
+
 	}*/
-	
+
 	class lineEquation{
 		private float slope;
 		private float intercept;
@@ -116,5 +121,5 @@ public class Board{
 			this.intercept = intercept;
 		}
 	}
-	
+
 }
